@@ -13,4 +13,7 @@ Place the link to the manifest file (<link rel="manifest" href="{$BaseHref}manif
 Include the js (Requirements::javascript('pixelspin/silverstripe-progressivewebapp:resources/js/progressivewebapp.js');)
 
 ## Todo
-Improve the documentation
+- Add "add to homescreen" prompt
+- Add offline support
+- Create an you are offline page
+- Improve documentation
