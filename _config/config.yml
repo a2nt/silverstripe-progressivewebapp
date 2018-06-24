@@ -1,0 +1,11 @@
+---
+Name: progressivewebapp
+---
+
+SilverStripe\Control\Director:
+  rules:
+    'manifest.json': 'Pixelspin\ProgressiveWebApp\Controllers\ProgressiveWebAppController'
+    
+SilverStripe\SiteConfig\SiteConfig:
+    extensions:
+        - Pixelspin\ProgressiveWebApp\Extensions\ProgressiveWebAppSiteConfigExtension
