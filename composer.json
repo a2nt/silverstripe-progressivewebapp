@@ -27,7 +27,10 @@
         "installer-name": "silverstripe-progressivewebapp",
         "branch-alias": {
             "dev-master": "2.x-dev"
-        }
+        },
+        "expose": [
+            "resources"
+        ]
     },
     "autoload": {
         "psr-4": {
