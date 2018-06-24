@@ -10,3 +10,7 @@ composer require pixelspin/silverstripe-progressivewebapp
 ## Usage
 Install the module, run dev/build and fill in the settings in the siteconfig
 Place the link to the manifest file (<link rel="manifest" href="{$BaseHref}manifest.json">) in the head of your pages and add the color meta data as well (<meta name="theme-color" content="$SiteConfig.ManifestColor">)
+Include the js (Requirements::javascript('pixelspin/silverstripe-progressivewebapp:resources/js/progressivewebapp.js');)
+
+## Todo
+Improve the documentation
