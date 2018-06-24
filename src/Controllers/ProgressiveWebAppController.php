@@ -78,6 +78,16 @@ class ProgressiveWebAppController extends Controller {
                     'src' => $logo->Fill(192,192)->Link(),
                     'sizes' => '192x192',
                     'type' => $mime
+                ],
+                [
+                    'src' => $logo->Fill(256,256)->Link(),
+                    'sizes' => '256x256',
+                    'type' => $mime
+                ],
+                [
+                    'src' => $logo->Fill(512,512)->Link(),
+                    'sizes' => '512x512',
+                    'type' => $mime
                 ]
             ];
         }
