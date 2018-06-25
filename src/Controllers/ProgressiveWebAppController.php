@@ -23,7 +23,7 @@ class ProgressiveWebAppController extends Controller {
         
         $config = SiteConfig::current_site_config();
         $manifestContent = [];
-        $manifestContent['start_url'] = '/';
+        $manifestContent['start_url'] = './';
         
         if($config->ManifestName){
             $manifestContent['name'] = $config->ManifestName;
