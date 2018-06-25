@@ -20,11 +20,11 @@ class ProgressiveWebAppController extends Controller {
      * @return mixed
      */
     public function index($url) {
-        
+
         $config = SiteConfig::current_site_config();
         $manifestContent = [];
-        $manifestContent['start_url'] = './';
-        
+        $manifestContent['start_url'] = '/';
+
         if($config->ManifestName){
             $manifestContent['name'] = $config->ManifestName;
         }
@@ -44,7 +44,7 @@ class ProgressiveWebAppController extends Controller {
         if($config->ManifestDisplay){
             $manifestContent['display'] = $config->ManifestDisplay;
         }
-        
+
         $logo = $config->ManifestLogo();
         if($logo && $logo->exists()){
             $mime = $logo->getMimeType();
@@ -91,10 +91,10 @@ class ProgressiveWebAppController extends Controller {
                 ]
             ];
         }
-        
+
         $this->getResponse()->addHeader('Content-Type', 'application/manifest+json; charset="utf-8"');
         return json_encode($manifestContent);
-        
+
     }
 
 }
