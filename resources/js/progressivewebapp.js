@@ -1,3 +1,6 @@
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js');
+    var baseHref = (document.getElementsByTagName('base')[0] || {}).href;
+    if(baseHref){
+        navigator.serviceWorker.register(baseHref + 'service-worker.js');
+    }
 }

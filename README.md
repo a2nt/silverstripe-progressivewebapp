@@ -8,13 +8,13 @@ composer require pixelspin/silverstripe-progressivewebapp
 ```
 
 ## Usage
-Install the module, run dev/build and fill in the settings in the siteconfig
-Create a symlink at the root of you website to vendor/pixelspin/silverstripe-progressivewebapp/service-worker.js
-Place the link to the manifest file (<link rel="manifest" href="{$BaseHref}manifest.json">) in the head of your pages and add the color meta data as well (<meta name="theme-color" content="$SiteConfig.ManifestColor">)
-Include the js (Requirements::javascript('pixelspin/silverstripe-progressivewebapp:resources/js/progressivewebapp.js');)
-
-## Todo
-- Add "add to homescreen" prompt
-- Add offline support
-- Create an you are offline page
-- Improve documentation
+- Install the module, run dev/build and fill in the settings in the siteconfig
+- Include the required js to register the service worker
+```
+Requirements::javascript('pixelspin/silverstripe-progressivewebapp:resources/js/progressivewebapp.js');
+```
+- Add the following tags to the head of your website
+```
+<meta name="theme-color" content="$SiteConfig.ManifestColor">
+<link rel="manifest" href="{$BaseHref}manifest.json">
+```

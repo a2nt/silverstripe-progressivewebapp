@@ -5,7 +5,7 @@ namespace Pixelspin\ProgressiveWebApp\Controllers;
 use SilverStripe\Control\Controller;
 use SilverStripe\SiteConfig\SiteConfig;
 
-class ProgressiveWebAppController extends Controller {
+class ManifestController extends Controller {
 
     /**
      * @var array

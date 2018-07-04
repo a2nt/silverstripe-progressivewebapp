@@ -4,7 +4,8 @@ Name: progressivewebapp
 
 SilverStripe\Control\Director:
   rules:
-    'manifest.json': 'Pixelspin\ProgressiveWebApp\Controllers\ProgressiveWebAppController'
+    'manifest.json': 'Pixelspin\ProgressiveWebApp\Controllers\ManifestController'
+    'service-worker.js': 'Pixelspin\ProgressiveWebApp\Controllers\ServiceWorkerController'
     
 SilverStripe\SiteConfig\SiteConfig:
     extensions:
