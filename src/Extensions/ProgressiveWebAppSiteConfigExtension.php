@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixelspin\ProgressiveWebApp\Extensions;
+namespace MichelSteege\ProgressiveWebApp\Extensions;
 
 use SilverStripe\ORM\DataExtension;
 use SilverWare\Colorpicker\ORM\FieldType\DBColor;
