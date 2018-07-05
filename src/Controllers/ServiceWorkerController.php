@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixelspin\ProgressiveWebApp\Controllers;
+namespace MichelSteege\ProgressiveWebApp\Controllers;
 
 use SilverStripe\Control\Controller;
 
