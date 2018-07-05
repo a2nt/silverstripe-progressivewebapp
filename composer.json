@@ -1,5 +1,5 @@
 {
-    "name": "pixelspin/silverstripe-progressivewebapp",
+    "name": "michelsteege/silverstripe-progressivewebapp",
     "description": "Tools to add progressive web app functionality to your silverstripe website",
     "type": "silverstripe-vendormodule",
     "keywords": [
