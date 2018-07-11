@@ -58,6 +58,12 @@
         if (event.request.method !== 'GET') {
             return;
         }
+                                   
+        //Skip admin url's
+        if(requestURL.pathname.indexOf('admin') >= 0){
+            log('Service worker: skip admin ' + event.request.url);
+            return;
+        }
         
         //Parse the url
         var requestURL = new URL(event.request.url);
