@@ -59,14 +59,14 @@
             return;
         }
                                    
+        //Parse the url
+        var requestURL = new URL(event.request.url);
+                                   
         //Skip admin url's
         if(requestURL.pathname.indexOf('admin') >= 0){
             log('Service worker: skip admin ' + event.request.url);
             return;
         }
-        
-        //Parse the url
-        var requestURL = new URL(event.request.url);
         
         //Test for images
         if (/\.(jpg|jpeg|png|gif|webp)$/.test(requestURL.pathname)) {
