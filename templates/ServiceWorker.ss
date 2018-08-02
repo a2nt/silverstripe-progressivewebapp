@@ -63,7 +63,7 @@
         var requestURL = new URL(event.request.url);
                                    
         //Skip admin url's
-        if(requestURL.pathname.indexOf('admin') >= 0){
+        if(requestURL.pathname.indexOf('admin') >= 0 || requestURL.pathname.indexOf('Security') >= 0 || requestURL.pathname.indexOf('dev') >= 0){
             log('Service worker: skip admin ' + event.request.url);
             return;
         }
