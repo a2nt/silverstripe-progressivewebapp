@@ -21,7 +21,7 @@ class ServiceWorkerController extends Controller {
     /**
      * @config
      */
-    private static $debug_mode = true;
+    private static $debug_mode = false;
 
     /**
      * Default controller action for the service-worker.js file
