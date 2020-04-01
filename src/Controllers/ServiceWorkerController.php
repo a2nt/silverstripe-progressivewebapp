@@ -1,6 +1,6 @@
 <?php
 
-namespace MichelSteege\ProgressiveWebApp\Controllers;
+namespace A2nt\ProgressiveWebApp\Controllers;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
@@ -17,7 +17,7 @@ class ServiceWorkerController extends Controller {
     private static $allowed_actions = [
         'index'
     ];
-    
+
     /**
      * @config
      */
@@ -32,7 +32,7 @@ class ServiceWorkerController extends Controller {
         $this->getResponse()->addHeader('Content-Type', 'application/javascript; charset="utf-8"');
         return $this->renderWith('ServiceWorker');
     }
-    
+
     /**
      * Base URL
      * @return varchar
@@ -40,7 +40,7 @@ class ServiceWorkerController extends Controller {
     public function BaseUrl() {
         return Director::baseURL();
     }
-    
+
     /**
      * Debug mode
      * @return bool
@@ -51,7 +51,7 @@ class ServiceWorkerController extends Controller {
         }
         return $this->config()->get('debug_mode');
     }
-    
+
     /**
      * A list with file to cache in the install event
      * @return ArrayList

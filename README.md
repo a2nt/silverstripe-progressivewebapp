@@ -1,20 +1,28 @@
 # SilverStripe Progressive Web App
 
 Tools to add progressive web app functionality to your silverstripe website
+And make it available offline
 
 ## Installation
 ```
-composer require michelsteege/silverstripe-progressivewebapp
+composer require a2nt/silverstripe-progressivewebapp
 ```
 
 ## Usage
 - Install the module, run dev/build and fill in the settings in the siteconfig
-- Include the required js to register the service worker
+- Add js to register the service worker
 ```
-Requirements::javascript('michelsteege/silverstripe-progressivewebapp:resources/js/progressivewebapp.js');
+if ('serviceWorker' in navigator) {
+    var baseHref = (document.getElementsByTagName('base')[0] || {}).href;
+    if(baseHref){
+        navigator.serviceWorker.register(baseHref + 'service-worker.js').then(function() {
+            console.log('Service Worker Registered');
+        });
+    }
+}
 ```
 - Add the following tags to the head of your website
 ```
-<meta name="theme-color" content="$SiteConfig.ManifestColor">
-<link rel="manifest" href="{$BaseHref}manifest.json">
+<meta name="theme-color" content="#000000" />
+<link rel="manifest" href="{$BaseHref}manifest.json" />
 ```

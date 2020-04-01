@@ -1,9 +1,9 @@
 <?php
 
-namespace MichelSteege\ProgressiveWebApp\Interfaces;
+namespace A2nt\ProgressiveWebApp\Interfaces;
 
 interface ServiceWorkerCacheProvider {
-    
+
     public static function getServiceWorkerCachedPaths();
-    
+
 }

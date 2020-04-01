@@ -1,5 +1,5 @@
 {
-    "name": "a2nt/silverstripe-progressivewebapp",
+    "name": "michelsteege/silverstripe-progressivewebapp",
     "description": "Tools to add progressive web app functionality to your silverstripe website",
     "type": "silverstripe-vendormodule",
     "keywords": [
@@ -15,17 +15,26 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "silverstripe/cms": "^4.*"
+        "silverstripe/cms": "^4.0@dev",
+        "silverstripe/vendor-plugin": "^1.0",
+        "silverware/colorpicker": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7",
+        "squizlabs/php_codesniffer": "^3.0"
     },
     "extra": {
         "installer-name": "silverstripe-progressivewebapp",
         "branch-alias": {
             "dev-master": "2.x-dev"
-        }
+        },
+        "expose": [
+            "resources"
+        ]
     },
     "autoload": {
         "psr-4": {
-            "A2nt\\ProgressiveWebApp\\": "src/"
+            "Pixelspin\\ProgressiveWebApp\\": "src/"
         }
     }
 }
