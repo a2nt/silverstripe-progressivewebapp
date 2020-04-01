@@ -10,7 +10,7 @@ composer require a2nt/silverstripe-progressivewebapp
 
 ## Usage
 - Install the module, run dev/build and fill in the settings in the siteconfig
-- Add js to register the service worker
+- Add js to register the service worker (example can be found at client/src/app.js)
 ```
 if ('serviceWorker' in navigator) {
     var baseHref = (document.getElementsByTagName('base')[0] || {}).href;

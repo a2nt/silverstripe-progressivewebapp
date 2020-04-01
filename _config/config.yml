@@ -5,4 +5,8 @@ Name: progressivewebapp
 SilverStripe\Control\Director:
   rules:
     'manifest.json': 'A2nt\ProgressiveWebApp\Controllers\ManifestController'
-    'service-worker.js': 'A2nt\ProgressiveWebApp\Controllers\ServiceWorkerController'
+    'sw.js/$Action': 'A2nt\ProgressiveWebApp\Controllers\ServiceWorkerController'
+
+SilverStripe\CMS\Model\SiteTree:
+  extensions:
+    - A2nt\ProgressiveWebApp\Extensions\SiteTree
