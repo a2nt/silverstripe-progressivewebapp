@@ -78,8 +78,8 @@ class ServiceWorkerController extends Controller {
         return $this->config()->get('debug_mode');
     }
 
-    public function Version() {
-        return $this->config()->get('version').filemtime(self::getScriptPath());
+    public static function Version() {
+        return self::config()->get('version').filemtime(self::getScriptPath());
     }
 
     /**

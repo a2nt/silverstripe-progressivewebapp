@@ -53,7 +53,7 @@ class ManifestController extends Controller
             'theme_color' => $cfg->get('background'),
             'orientation' => 'portrait-primary',
             'serviceworker' => [
-                'src' => 'sw.js',
+                'src' => 'sw.js?v='.ServiceWorkerController::Version(),
                 'scope' => '/',
                 'use_cache' => true,
             ],
@@ -101,7 +101,7 @@ class ManifestController extends Controller
                     'type' => 'image/png',
                 ],
                 [
-                    'src' => self::join_links($icons_path, 'android-chrome-384x384.png'),
+                    'src' => self::join_links($icons_path, 'android-chrome-512x512.png'),
                     'sizes' => '512x512',
                     'type' => 'image/png',
                 ],
