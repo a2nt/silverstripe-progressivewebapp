@@ -14,9 +14,40 @@ if (typeof self.CACHE_NAME !== 'string') {
 }
 
 self.addEventListener('fetch', (event) => {
+  // skip non-get
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  //Parse the url
+  const requestURL = new URL(event.request.url);
+
+  //Check for our own urls
+  /*if (requestURL.origin !== location.origin) {
+    log('SW: skip external ' + event.request.url);
+    return;
+  }*/
+
+  //Skip admin url's
+  if (
+    requestURL.pathname.indexOf('admin') >= 0 ||
+    requestURL.pathname.indexOf('Security') >= 0 ||
+    requestURL.pathname.indexOf('dev') >= 0
+  ) {
+    log(`SW: skip admin ${  event.request.url}`);
+    return;
+  }
+
+  //Test for images
+  /*if (/\.(jpg|jpeg|png|gif|webp)$/.test(requestURL.pathname)) {
+    log('SW: skip image ' + event.request.url);
+    //For now we skip images but change this later to maybe some caching and/or an offline fallback
+    return;
+  }*/
+
   // Clone the request for fetch and cache
   // A request is a stream and can be consumed only once.
-  var fetchRequest = event.request.clone(),
+  const fetchRequest = event.request.clone(),
     cacheRequest = event.request.clone();
 
   // Respond with content from fetch or cache
@@ -29,13 +60,13 @@ self.addEventListener('fetch', (event) => {
         // Because we want the browser to consume the response,
         // as well as cache to consume the response, we need to
         // clone it so we have 2 streams
-        var responseToCache = response.clone();
+        const responseToCache = response.clone();
 
         // and update the cache
         caches.open(self.CACHE_NAME).then((cache) => {
           // Clone the request again to use it
           // as the key for our cache
-          var cacheSaveRequest = event.request.clone();
+          const cacheSaveRequest = event.request.clone();
           cache.put(cacheSaveRequest, responseToCache);
         });
 

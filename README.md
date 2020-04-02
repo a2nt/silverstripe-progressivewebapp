@@ -13,12 +13,16 @@ composer require a2nt/silverstripe-progressivewebapp
 - Add js to register the service worker (example can be found at client/src/app.js)
 ```
 if ('serviceWorker' in navigator) {
-    var baseHref = (document.getElementsByTagName('base')[0] || {}).href;
-    if(baseHref){
-        navigator.serviceWorker.register(baseHref + 'sw.js').then(function() {
-            console.log('Service Worker Registered');
-        });
-    }
+  var baseHref = (document.getElementsByTagName('base')[0] || {}).href;
+  var version = (document.querySelector('meta[name="swversion"]') || {})
+    .content;
+  if (baseHref) {
+    navigator.serviceWorker
+      .register(baseHref + 'sw.js?v=' + version)
+      .then(() => {
+        console.log('SW: Registered');
+      });
+  }
 }
 ```
 - Add the following tags to the head of your website
