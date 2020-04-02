@@ -15,7 +15,7 @@ composer require a2nt/silverstripe-progressivewebapp
 if ('serviceWorker' in navigator) {
     var baseHref = (document.getElementsByTagName('base')[0] || {}).href;
     if(baseHref){
-        navigator.serviceWorker.register(baseHref + 'service-worker.js').then(function() {
+        navigator.serviceWorker.register(baseHref + 'sw.js').then(function() {
             console.log('Service Worker Registered');
         });
     }
