@@ -1,5 +1,5 @@
 const SOURCEDIR = './src';
-const COMPRESS = false;
+const COMPRESS = true;
 
 const webpack = require('webpack');
 const path = require('path');

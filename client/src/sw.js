@@ -1,5 +1,13 @@
 // caches polyfill because it is not added to native yet!
+var log = require('./lib/log');
 var caches = require('./thirdparty/serviceworker-caches');
+
+if (debug) {
+  log('SW: debug is on');
+  log(`SW: CACHE_NAME: ${CACHE_NAME}`);
+  log(`SW: appDomain: ${appDomain}`);
+  log(`SW: lang: ${lang}`);
+}
 
 if (typeof self.CACHE_NAME !== 'string') {
   throw new Error('Cache Name cannot be empty');
@@ -37,6 +45,7 @@ self.addEventListener('fetch', (event) => {
 
       // when fetch times out or fails
       .catch((err) => {
+        log('SW: fetch failed');
         // Return the promise which
         // resolves on a match in cache for the current request
         // or rejects if no matches are found
@@ -48,6 +57,11 @@ self.addEventListener('fetch', (event) => {
 // Now we need to clean up resources in the previous versions
 // of Service Worker scripts
 self.addEventListener('activate', (event) => {
+  log(`SW: activated: ${version}`);
   // Destroy the cache
   event.waitUntil(caches.delete(self.CACHE_NAME));
+});
+
+self.addEventListener('install', (e) => {
+  log(`SW: installing version: ${version}`);
 });
