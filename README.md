@@ -25,4 +25,5 @@ if ('serviceWorker' in navigator) {
 ```
 <meta name="theme-color" content="#000000" />
 <link rel="manifest" href="{$BaseHref}manifest.json" />
+<meta name="swversion" content="{$SWVersion}" />
 ```
