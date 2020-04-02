@@ -23,6 +23,7 @@ class ServiceWorkerController extends Controller {
      */
     private static $debug_mode = false;
     private static $version = '1';
+    private static $custom_sw_path;
 
     /**
      * Default controller action for the service-worker.js file
@@ -49,7 +50,8 @@ class ServiceWorkerController extends Controller {
 
     private static function getScriptPath()
     {
-        return join(DIRECTORY_SEPARATOR, [
+        $custom_path = self::config()->get('custom_sw_path');
+        return $custom_path ? $custom_path : join(DIRECTORY_SEPARATOR, [
             __DIR__,
             '..',
             '..',
@@ -71,11 +73,11 @@ class ServiceWorkerController extends Controller {
      * Debug mode
      * @return bool
      */
-    public function DebugMode() {
+    public static function DebugMode() {
         if(Director::isDev()){
             return true;
         }
-        return $this->config()->get('debug_mode');
+        return self::config()->get('debug_mode');
     }
 
     public static function Version() {
@@ -86,7 +88,7 @@ class ServiceWorkerController extends Controller {
      * A list with file to cache in the install event
      * @return ArrayList
      */
-    public function CacheOnInstall() {
+    public static function CacheOnInstall() {
         $paths = [];
         foreach(ClassInfo::implementorsOf(ServiceWorkerCacheProvider::class) as $class){
             foreach($class::getServiceWorkerCachedPaths() as $path){
