@@ -13,7 +13,6 @@
         "email": "tony@twma.pro"
     }],
     "minimum-stability": "dev",
-    "prefer-stable": true,
     "require": {
         "silverstripe/cms": "^4"
     },
