@@ -14,11 +14,11 @@ class SiteTree extends DataExtension
         'AvailableOffline' => 'Boolean(1)',
     ];
 
-    public function updateCMSFields(FieldList $fields)
+    public function updateSettingsFields(FieldList $fields)
     {
         parent::updateCMSFields($fields);
 
-        $fields->addFieldsToTab('Root.Settings', [
+        $fields->addFieldsToTab('Root.Main', [
            CheckboxField::create('AvailableOffline', 'Make page available offline'),
         ]);
     }
