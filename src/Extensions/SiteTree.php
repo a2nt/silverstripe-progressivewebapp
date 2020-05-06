@@ -18,7 +18,7 @@ class SiteTree extends DataExtension
     {
         parent::updateCMSFields($fields);
 
-        $fields->addFieldsToTab('Root.Main', [
+        $fields->addFieldsToTab('Root.Settings', [
            CheckboxField::create('AvailableOffline', 'Make page available offline'),
         ]);
     }
