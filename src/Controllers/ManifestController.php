@@ -43,8 +43,8 @@ class ManifestController extends Controller
             'name' => $title,
             'short_name' => $title,
             'description' => $desc,
-            'start_url' => '/',
-            'scope' => '/',
+            'start_url' => Director::baseURL(),
+            'scope' => Director::baseURL(),
             'permissions' => [
                 'gcm',
             ],
