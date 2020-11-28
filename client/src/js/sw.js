@@ -1,6 +1,6 @@
 // caches polyfill because it is not added to native yet!
-var log = require('./lib/log');
-var caches = require('./thirdparty/serviceworker-caches');
+var log = require('../lib/log');
+var caches = require('../thirdparty/serviceworker-caches');
 
 if (debug) {
   log('SW: debug is on');
@@ -34,7 +34,7 @@ self.addEventListener('fetch', (event) => {
     requestURL.pathname.indexOf('Security') >= 0 ||
     requestURL.pathname.indexOf('dev') >= 0
   ) {
-    log(`SW: skip admin ${  event.request.url}`);
+    log(`SW: skip admin ${event.request.url}`);
     return;
   }
 
