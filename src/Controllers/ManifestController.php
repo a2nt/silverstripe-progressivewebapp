@@ -43,6 +43,7 @@ class ManifestController extends Controller
             'name' => $title,
             'short_name' => $title,
             'description' => $desc,
+            'offline_enabled' => true,
             'start_url' => Director::baseURL(),
             'scope' => Director::baseURL(),
             'permissions' => [
@@ -110,7 +111,7 @@ class ManifestController extends Controller
 
 
         $gcm_sender_id = $cfg->get('gcm_sender_id');
-        if($gcm_sender_id) {
+        if ($gcm_sender_id) {
             $manifestContent['gcm_sender_id'] = $gcm_sender_id;
             $manifestContent['gcm_user_visible_only'] = true;
         }
