@@ -49,7 +49,7 @@ class ManifestController extends Controller
             'permissions' => [
                 'gcm',
             ],
-            'display' => 'fullscreen',
+            'display' => 'standalone',
             'background_color' => $cfg->get('background'),
             'theme_color' => $cfg->get('background'),
             'orientation' => 'portrait-primary',
