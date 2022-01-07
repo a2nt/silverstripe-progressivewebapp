@@ -6,6 +6,7 @@ SilverStripe\Control\Director:
   rules:
     'manifest.json': 'A2nt\ProgressiveWebApp\Controllers\ManifestController'
     'sw.js/$Action': 'A2nt\ProgressiveWebApp\Controllers\ServiceWorkerController'
+    '.well-known/$Action!': 'A2nt\ProgressiveWebApp\Controllers\WellKnownController'
 
 SilverStripe\CMS\Model\SiteTree:
   extensions:

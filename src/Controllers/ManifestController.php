@@ -16,9 +16,8 @@ class ManifestController extends Controller
      * @var array
      */
     private static $allowed_actions = [
-        'index'
+        'index',
     ];
-
     /**
      * Default controller action for the manifest.json file
      *
