@@ -1,368 +1,357 @@
-const SOURCEDIR = './client/src';
-const DISTDIR = './client/dist';
-const COMPRESS = true;
+/*
+ * Production assets generation
+ */
+const common = require('./webpack.config.common.js');
+const conf = common.configuration;
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const path = require('path');
-const filesystem = require('fs');
+const {
+    merge,
+} = require('webpack-merge');
 
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const fs = require('fs');
+const path = require('path');
+
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack');
-const ImageSpritePlugin = require('@a2nt/image-sprite-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const UIInfo = require('./package.json');
+//const ImageSpritePlugin = require('@a2nt/image-sprite-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const NODE_ENV = conf.NODE_ENV || process.env.NODE_ENV;
+const COMPRESS = NODE_ENV === 'production' ? true : false;
+
+const IP = process.env.IP || conf.HOSTNAME;
+const PORT = process.env.PORT || conf.PORT;
 
 const plugins = [
-	new webpack.DefinePlugin({
-		'process.env': {
-			NODE_ENV: JSON.stringify('production'),
-		},
-	}),
-	new HardSourceWebpackPlugin(),
-	new webpack.LoaderOptionsPlugin({
-		minimize: COMPRESS,
-		debug: false,
-	}),
-	new MiniCssExtractPlugin({
-		filename: 'css/[name].css',
-		allChunks: true,
-	}),
-	/**/
-	/*new HtmlWebpackPlugin({
-		template: SOURCEDIR + '/index.html',
-	}),*/
-	new webpack.DefinePlugin({
-		UINAME: JSON.stringify(UIInfo.name),
-		UIVERSION: JSON.stringify(UIInfo.version),
-		UIAUTHOR: JSON.stringify(UIInfo.author),
-	}),
+    new webpack.ProvidePlugin(common['PROVIDES']),
+    new webpack.DefinePlugin(common['JSVARS']),
+    new webpack.LoaderOptionsPlugin({
+        minimize: COMPRESS,
+        debug: !COMPRESS,
+      }),
+    new MiniCssExtractPlugin({
+      experimentalUseImportModule: false,
+      filename: 'css/[name].css',
+      //allChunks: true,
+    }),
 ];
 
-if (COMPRESS) {
-	plugins.push(
-		new OptimizeCssAssetsPlugin({
-			//assetNameRegExp: /\.optimize\.css$/g,
-			cssProcessor: require('cssnano'),
-			cssProcessorPluginOptions: {
-				preset: ['default'],
-			},
-			cssProcessorOptions: {
-				zindex: true,
-				cssDeclarationSorter: true,
-				reduceIdents: false,
-				mergeIdents: true,
-				mergeRules: true,
-				mergeLonghand: true,
-				discardUnused: true,
-				discardOverridden: true,
-				discardDuplicates: true,
-				discardComments: {
-					removeAll: true,
-				},
-			},
-			canPrint: true,
-		}),
-	);
-	plugins.push(require('autoprefixer'));
-
-	plugins.push(
-		new ImageminPlugin({
-			bail: false, // Ignore errors on corrupted images
-			cache: true,
-			filter: (source, sourcePath) => {
-				if (source.byteLength < 512000) {
-					return false;
-				}
-
-				return true;
-			},
-			imageminOptions: {
-				plugins: [
-					['gifsicle', { interlaced: true }],
-					['jpegtran', { progressive: true }],
-					['optipng', { optimizationLevel: 5 }],
-					[
-						'svgo',
-						{
-							plugins: [
-								{
-									removeViewBox: false,
-								},
-							],
-						},
-					],
-				],
-			},
-		}),
-	);
-
-	plugins.push(
-		new ImageSpritePlugin({
-			exclude: /exclude|original|default-|icons|sprite/,
-			commentOrigin: false,
-			compress: true,
-			extensions: ['png'],
-			indent: '',
-			log: true,
-			//outputPath: path.join(__dirname, conf.APPDIR, conf.DIST),
-			outputFilename: 'img/sprite-[hash].png',
-			padding: 0,
-		}),
-	);
+const indexPath = path.join(__dirname, conf.APPDIR, conf.SRC, 'index.html');
+if (fs.existsSync(indexPath)) {
+  plugins.push(
+      new HtmlWebpackPlugin({
+          publicPath: '',
+          template: path.join(conf.APPDIR, conf.SRC, 'index.html'),
+          templateParameters: {
+              NODE_ENV: NODE_ENV,
+              GRAPHQL_URL: conf['GRAPHQL_URL'],
+              STATIC_URL: conf['STATIC_URL'],
+              REACT_SCRIPTS: NODE_ENV === 'production' ?
+                  '<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>' : '<script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script><script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>',
+            },
+          xhtml: true,
+        }),
+  );
 }
 
-const includes = {};
+const faviconPath = path.join(__dirname, conf.APPDIR, conf.SRC, 'favicon.png');
+if (fs.existsSync(faviconPath)) {
+  plugins.push(
+      new FaviconsWebpackPlugin({
+          title: 'Webpack App',
+          logo: faviconPath,
+          prefix: '/icons/',
+          emitStats: false,
+          persistentCache: true,
+          inject: false,
+          statsFilename: path.join(
+              conf.APPDIR,
+              conf.DIST,
+              'icons',
+              'iconstats.json',
+          ),
+          icons: {
+              android: true,
+              appleIcon: true,
+              appleStartup: true,
+              coast: true,
+              favicons: true,
+              firefox: true,
+              opengraph: true,
+              twitter: true,
+              yandex: true,
+              windows: true,
+            },
+        }),
+  );
+}
 
-const _addAppFiles = (theme) => {
-	const dirPath = path.resolve(__dirname, theme);
-	const themeName = path.basename(theme);
+// add themes favicons
+common.themes.forEach((theme) => {
+    const faviconPath = path.join(__dirname, theme, conf.SRC, 'favicon.png');
+    if (fs.existsSync(faviconPath)) {
+      plugins.push(
+          new FaviconsWebpackPlugin({
+              title: 'Webpack App',
+              logo: faviconPath,
+              prefix: '/' + theme + '-icons/',
+              emitStats: false,
+              persistentCache: true,
+              inject: false,
+              statsFilename: path.join(
+                  conf.APPDIR,
+                  conf.DIST,
+                  theme + '-icons',
+                  'iconstats.json',
+              ),
+              icons: {
+                  android: true,
+                  appleIcon: true,
+                  appleStartup: true,
+                  coast: true,
+                  favicons: true,
+                  firefox: true,
+                  opengraph: true,
+                  twitter: true,
+                  yandex: true,
+                  windows: true,
+                },
+            }),
+      );
+    }
+  });
 
-	if (filesystem.existsSync(path.join(dirPath, 'js', 'app.js'))) {
-		includes['app'] = path.join(dirPath, 'js', 'app.js');
-	} else if (filesystem.existsSync(path.join(dirPath, 'scss', 'app.scss'))) {
-		includes['app'] = path.join(dirPath, 'scss', 'app.scss');
-	}
+const minimizers = [];
+minimizers.push(
+  new TerserPlugin({
+    terserOptions: {
+        module: false,
+        parse: {
+            // we want terser to parse ecma 8 code. However, we don't want it
+            // to apply any minfication steps that turns valid ecma 5 code
+            // into invalid ecma 5 code. This is why the 'compress' and 'output'
+            // sections only apply transformations that are ecma 5 safe
+            // https://github.com/facebook/create-react-app/pull/4234
+            ecma: 8,
+          },
+        compress: {
+            ecma: 6,
+            warnings: false,
+            // Disabled because of an issue with Uglify breaking seemingly valid code:
+            // https://github.com/facebook/create-react-app/issues/2376
+            // Pending further investigation:
+            // https://github.com/mishoo/UglifyJS2/issues/2011
+            comparisons: false,
+          },
+        keep_fnames: true,
+        keep_classnames: true,
 
-	includes['sw'] = path.join(dirPath, 'js', 'sw.js');
-
-	const _getAllFilesFromFolder = function (dir, includeSubFolders = true) {
-		const dirPath = path.resolve(__dirname, dir);
-		let results = [];
-
-		filesystem.readdirSync(dirPath).forEach((file) => {
-			if (file.charAt(0) === '_') {
-				return;
-			}
-
-			const filePath = path.join(dirPath, file);
-			const stat = filesystem.statSync(filePath);
-
-			if (stat && stat.isDirectory() && includeSubFolders) {
-				results = results.concat(
-					_getAllFilesFromFolder(filePath, includeSubFolders),
-				);
-			} else {
-				results.push(filePath);
-			}
-		});
-
-		return results;
-	};
-
-	// add page specific scripts
-	const typesJSPath = path.join(theme, 'js/types');
-	if (filesystem.existsSync(typesJSPath)) {
-		const pageScripts = _getAllFilesFromFolder(typesJSPath, true);
-		pageScripts.forEach((file) => {
-			includes[`app_${path.basename(file, '.js')}`] = file;
-		});
-	}
-
-	// add page specific scss
-	const typesSCSSPath = path.join(theme, 'scss/types');
-	if (filesystem.existsSync(typesSCSSPath)) {
-		const scssIncludes = _getAllFilesFromFolder(typesSCSSPath, true);
-		scssIncludes.forEach((file) => {
-			includes[`app_${path.basename(file, '.scss')}`] = file;
-		});
-	}
-};
-
-_addAppFiles(SOURCEDIR);
-
-module.exports = {
-	entry: includes,
-	output: {
-		path: path.resolve(__dirname, DISTDIR),
-		filename: path.join('js', '[name].js'),
-		publicPath: path.resolve(__dirname, DISTDIR),
-	},
-	devtool: COMPRESS ? '' : 'source-map',
-	externals: {
-		jquery: 'jQuery',
-	},
-	optimization: {
-		namedModules: true, // NamedModulesPlugin()
-		splitChunks: {
-			// CommonsChunkPlugin()
-			name: 'vendor',
-			minChunks: 2,
-		},
-		noEmitOnErrors: true, // NoEmitOnErrorsPlugin
-		concatenateModules: true, //ModuleConcatenationPlugin
-		minimizer: [
-			new TerserPlugin({
-				terserOptions: {
-					parse: {
-						// we want terser to parse ecma 8 code. However, we don't want it
-						// to apply any minfication steps that turns valid ecma 5 code
-						// into invalid ecma 5 code. This is why the 'compress' and 'output'
-						// sections only apply transformations that are ecma 5 safe
-						// https://github.com/facebook/create-react-app/pull/4234
-						ecma: 8,
-					},
-					compress: {
-						ecma: 5,
-						warnings: false,
-						// Disabled because of an issue with Uglify breaking seemingly valid code:
-						// https://github.com/facebook/create-react-app/issues/2376
-						// Pending further investigation:
-						// https://github.com/mishoo/UglifyJS2/issues/2011
-						comparisons: false,
-					},
-					mangle: {
-						safari10: true,
-					},
-					output: {
-						ecma: 5,
-						comments: false,
-						// Turned on because emoji and regex is not minified properly using default
-						// https://github.com/facebook/create-react-app/issues/2488
-						ascii_only: true,
-					},
-				},
-				// Use multi-process parallel running to improve the build speed
-				// Default number of concurrent runs: os.cpus().length - 1
-				parallel: true,
-				// Enable file caching
-				cache: true,
-			}),
-		],
-	},
-	module: {
-		rules: [
-			{
-				test: /\.jsx?$/,
-				//exclude: /node_modules/,
-				use: {
-					loader: 'babel-loader',
-					options: {
-						presets: ['@babel/preset-env'], //Preset used for env setup
-						plugins: [
-							['@babel/transform-react-jsx'],
-							['react-hot-loader/babel'],
-						],
-						cacheDirectory: true,
-						cacheCompression: false,
-					},
-				},
-			},
-			/*{
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
+        mangle: {
+            safari10: true,
+            keep_fnames: true,
+            keep_classnames: true,
+            reserved: ['$', 'jQuery', 'jquery'],
+          },
+        output: {
+            ecma: 5,
+            comments: false,
+            // Turned on because emoji and regex is not minified properly using default
+            // https://github.com/facebook/create-react-app/issues/2488
+            ascii_only: true,
+          },
       },
-      {
-        test: /\.coffee?$/,
-        use: 'coffee-loader',
-      },*/
-			{
-				test: /\.worker\.js$/,
-				use: {
-					loader: 'worker-loader',
-				},
-			},
-			{
-				test: /\.s?css$/,
-				use: [
-					{
-						loader: MiniCssExtractPlugin.loader,
-					},
-					{
-						loader: 'css-loader',
-						options: {
-							sourceMap: !COMPRESS,
-						},
-					},
-					{
-						loader: 'postcss-loader',
-						options: {
-							sourceMap: !COMPRESS,
-						},
-					},
-					{
-						loader: 'resolve-url-loader',
-					},
-					{
-						loader: 'sass-loader',
-						options: {
-							sourceMap: !COMPRESS,
-						},
-					},
-				],
-			},
-			{
-				test: /fontawesome([^.]+).(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: '[name].[ext]',
-							outputPath: 'fonts/',
-							publicPath: '../fonts/',
-						},
-					},
-				],
-			},
-			{
-				test: /\.(ttf|otf|eot|svg|woff(2)?)$/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: '[name].[ext]',
-							outputPath: 'fonts/',
-							publicPath: '../fonts/',
-						},
-					},
-				],
-			},
-			{
-				test: /\.(png|jpg|jpeg|gif|svg)$/,
-				loader: 'file-loader',
-				options: {
-					name: '[name].[ext]',
-					outputPath: 'img/',
-					publicPath: '../img/',
-				},
-			},
-		],
-	},
-	resolve: {
-		modules: [
-			path.resolve(__dirname, 'src'),
-			path.resolve(__dirname, 'node_modules'),
-		],
-		alias: {
-			jquery: require.resolve('jquery'),
-			jQuery: require.resolve('jquery'),
-		},
-	},
-	plugins: plugins,
+    // Use multi-process parallel running to improve the build speed
+    // Default number of concurrent runs: os.cpus().length - 1
+    parallel: true,
+  })
+);
 
-	devServer: {
-		host: '127.0.0.1',
-		port: 8001,
-		historyApiFallback: true,
-		hot: false,
-		clientLogLevel: 'info',
-		contentBase: [
-			path.resolve(__dirname, 'src'),
-			path.resolve(__dirname, 'node_modules'),
-			path.resolve(__dirname, 'dist'),
-		],
-		//watchContentBase: true,
-		overlay: {
-			warnings: true,
-			errors: true,
-		},
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	},
-};
+if (conf['PROCESS_CSS']) {
+  minimizers.push(
+    new CssMinimizerPlugin({
+      parallel: true,
+      minimizerOptions: [{
+          preset: [
+              'default',
+              {
+                  discardComments: {
+                      removeAll: true,
+                    },
+                  zindex: true,
+                  cssDeclarationSorter: true,
+                  reduceIdents: false,
+                  mergeIdents: true,
+                  mergeRules: true,
+                  mergeLonghand: true,
+                  discardUnused: true,
+                  discardOverridden: true,
+                  discardDuplicates: true,
+                },
+          ],
+        },],
+      minify: [
+          CssMinimizerPlugin.cssnanoMinify,
+          //CssMinimizerPlugin.cleanCssMinify,
+      ],
+    })
+  );
+}
+
+if (COMPRESS) {
+  plugins.push(require('autoprefixer'));
+
+  /*plugins.push(
+      new ImageSpritePlugin({
+          exclude: /exclude|original|default-|icons|sprite|svg|logo|favicon/,
+          commentOrigin: false,
+          compress: COMPRESS,
+          extensions: ['png'],
+          indent: '',
+          log: true,
+          //outputPath: path.join(__dirname, conf.APPDIR, conf.DIST),
+          outputFilename: 'img/sprite-[hash].png',
+          padding: 0,
+      }),
+  );*/
+}
+
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+    .BundleAnalyzerPlugin;
+plugins.push(
+    new BundleAnalyzerPlugin({
+        analyzerMode: 'static',
+        openAnalyzer: false,
+      }),
+);
+
+const cfg = merge(common.webpack, {
+    mode: NODE_ENV,
+    cache: {
+        type: 'filesystem',
+      },
+    recordsPath: path.join(__dirname, conf.APPDIR, conf.DIST, 'records.json'),
+    optimization: {
+        //removeAvailableModules: false,
+        //realContentHash: false,
+        splitChunks: {
+            name: 'vendor',
+            minChunks: 2,
+          },
+        concatenateModules: true, //ModuleConcatenationPlugin
+        minimizer: minimizers,
+      },
+
+    output: {
+        publicPath: path.join(conf.APPDIR, conf.DIST) + '/',
+        path: path.join(__dirname, conf.APPDIR, conf.DIST) + '/',
+        filename: path.join('js', '[name].js'),
+      },
+
+    module: {
+        rules: [{
+            test: /\.(js|ts)x?$/,
+            //exclude: /node_modules/,
+            use: {
+                loader: 'babel-loader', //'@sucrase/webpack-loader',
+                options: {
+                    //transforms: ['jsx']
+                    presets: [
+                        '@babel/preset-env',
+                        '@babel/react',
+                        {
+                            plugins: [
+                                '@babel/plugin-proposal-class-properties',
+                            ],
+                          },
+                    ], //Preset used for env setup
+                    plugins: [
+                        '@babel/plugin-transform-typescript',
+                        '@babel/transform-react-jsx',
+                    ],
+                    cacheDirectory: true,
+                    cacheCompression: true,
+                  },
+              },
+          },
+        {
+            test: /\.s?css$/,
+            use: [{
+                    loader: MiniCssExtractPlugin.loader,
+                    options: {
+                        publicPath: '../',
+                      },
+                  },
+                {
+                  loader: 'css-loader',
+                  options: {
+                      sourceMap: true,
+                    },
+                },
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: true,
+                      },
+                  },
+            ],
+          },
+        {
+            test: /fontawesome([^.]+).(ttf|otf|eot|woff(2)?)(\?[a-z0-9]+)?$/,
+            type: 'asset/resource',
+          },
+        {
+            test: /\.(ttf|otf|eot|woff(2)?)$/,
+            type: 'asset/resource',
+          }, {
+            test: /\.(png|webp|jpg|jpeg|gif|svg)$/,
+            type: 'javascript/auto',
+            use: [
+            {
+                loader: 'img-optimize-loader',
+                options: {
+                    name: '[name].[ext]',
+                    outputPath: 'img/',
+                    publicPath: '../img/',
+                    compress: {
+                        // This will take more time and get smaller images.
+                        mode: 'low', // 'lossless', 'high', 'low'
+                        disableOnDevelopment: true,
+                        webp: conf['webp'],
+                        // loseless compression for png
+                        optipng: {
+                            optimizationLevel: 4,
+                          },
+                        // lossy compression for png. This will generate smaller file than optipng.
+                        pngquant: {
+                            quality: [0.2, 0.8],
+                          },
+                        // Compression for svg.
+                        svgo: true,
+                        // Compression for gif.
+                        gifsicle: {
+                            optimizationLevel: 3,
+                          },
+                        // Compression for jpg.
+                        mozjpeg: {
+                            progressive: true,
+                            quality: 60,
+                          },
+                      },
+                    inline: {
+                        limit: 1,
+                      },
+                  },
+              },],
+          },],
+      },
+
+    plugins: plugins,
+  });
+
+console.log(cfg);
+module.exports = cfg;

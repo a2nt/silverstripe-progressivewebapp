@@ -57,7 +57,7 @@ class ServiceWorkerController extends Controller {
             '..',
             'client',
             'dist',
-            'sw.js',
+            'app_sw.js',
         ]);
     }
 

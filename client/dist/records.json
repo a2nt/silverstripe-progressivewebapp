@@ -1,0 +1,30 @@
+{
+  "chunks": {
+    "byName": {
+      "app_app": 21,
+      "app_sw": 898
+    },
+    "bySource": {
+      "0 app_app": 21,
+      "0 app_sw": 898
+    },
+    "usedIds": [
+      21,
+      898
+    ]
+  },
+  "modules": {
+    "byIdentifier": {
+      "./node_modules/.pnpm/babel-loader@8.2.5_qqaml4ljchhh37dxp4aoesgrby/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./client/src/js/lib/log.js": 729,
+      "./node_modules/.pnpm/babel-loader@8.2.5_qqaml4ljchhh37dxp4aoesgrby/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./client/src/js/types/app.js": 617,
+      "./node_modules/.pnpm/babel-loader@8.2.5_qqaml4ljchhh37dxp4aoesgrby/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./client/src/js/types/sw.js": 647,
+      "./node_modules/.pnpm/babel-loader@8.2.5_qqaml4ljchhh37dxp4aoesgrby/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./client/src/thirdparty/serviceworker-caches.js": 671
+    },
+    "usedIds": [
+      617,
+      647,
+      671,
+      729
+    ]
+  }
+}

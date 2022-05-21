@@ -1,0 +1,24 @@
+# Name: webapp-webpack
+# that's important to place this file into /app/_config/webpack.yml
+# with all configuration variables presented
+# Cuz WebPack compiling script use it to set configuration
+
+A2nt\CMSNiceties\Templates\WebpackTemplateProvider:
+  APPDIR: './'
+  THEMESDIR: './'
+  HOSTNAME: 127.0.0.1
+  PORT: 3000
+  SRC: client/src
+  DIST: client/dist
+  TYPESJS: client/src/js/types
+  TYPESSCSS: client/src/scss/types
+  webp: false
+  NODE_ENV: production #production,development
+  HTTPS: true
+  injectClient: true
+  GRAPHQL_URL: '/graphql'
+  GRAPHQL_API_KEY: 'hGz2hB26Sse2ageAsLD6xUD1WPPfZJyI5IfI7o'
+  PROCESS_CSS: true # Deep CSS minification
+  absolute_path: false
+  JQUERY: false # We don't use jQuery, otherwise it's aliassed and being loaded externaly 
+  #STATIC_URL: 'http://127.0.0.1'

@@ -1,6 +1,6 @@
 // caches polyfill because it is not added to native yet!
 var log = require('../lib/log');
-var caches = require('../thirdparty/serviceworker-caches');
+var caches = require('../../thirdparty/serviceworker-caches');
 
 if (debug) {
   log('SW: debug is on');
@@ -92,6 +92,34 @@ self.addEventListener('activate', (event) => {
   // Destroy the cache
   event.waitUntil(caches.delete(self.CACHE_NAME));
 });
+
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+
+  event.respondWith(
+    caches.match(request)
+      .then((response) => {
+        return response || fetch(request)
+          .then((response) => {
+            return response;
+          })
+          .catch(() => {
+            // Offline fallback image
+            if (request.url.match(/\.(jpe?g|png|gif|svg)$/)) {
+              return new Response(
+                '<svg role="img" aria-labelledby="offline-title" viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><title id="offline-title">Offline</title><path fill="rgba(145,145,145,0.5)" d="M0 0h400v225H0z" /><text fill="rgba(0,0,0,0.33)" font-family="Helvetica Neue,Arial,sans-serif" font-size="27" text-anchor="middle" x="200" y="113" dominant-baseline="central">offline</text></svg>',
+                {
+                  headers: {
+                    'Content-Type': 'image/svg+xml',
+                  },
+                }
+              );
+            }
+          });
+      })
+  );
+});
+
 
 self.addEventListener('install', (e) => {
   log(`SW: installing version: ${version}`);
