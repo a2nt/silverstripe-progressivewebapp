@@ -37,7 +37,7 @@ class ServiceWorkerController extends Controller {
         if($req->param('Action') === 'cachequeue') {
             return json_encode([
                 'urls' => [
-                    self::join_links(self::BaseUrl(),'app','client','dist','app.js')
+                    self::join_links(self::BaseUrl(),'app','client','dist', 'js', 'app.js')
                 ]
             ]);
         }
@@ -57,6 +57,7 @@ class ServiceWorkerController extends Controller {
             '..',
             'client',
             'dist',
+            'js',
             'app_sw.js',
         ]);
     }
