@@ -28,6 +28,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }*/
 
+  // skip captchas
+  if (
+    requestURL.pathname.indexOf('turnstile') >= 0
+  ){
+    log(`SW: skip captcha ${event.request.url}`);
+  }
+
   //Skip admin url's
   if (
     requestURL.pathname.indexOf('admin') >= 0 ||
